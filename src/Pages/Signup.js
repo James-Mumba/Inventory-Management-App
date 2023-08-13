@@ -32,6 +32,7 @@ function Signup() {
           <Form.Label>User Name</Form.Label>
           <Form.Control type="text" ref={nameRef} placeholder="john murley" />
         </Form.Group>
+        <br />
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -40,6 +41,7 @@ function Signup() {
             placeholder="name@example.com"
           />
         </Form.Group>
+        <br />
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -48,9 +50,11 @@ function Signup() {
             placeholder="*******"
           />
         </Form.Group>
+        <br />
         <Button type="submit" variant="warning" onClick={register}>
           Sign up
         </Button>
+        <p onClick={() => navigate("/Signin")}>Already have an account?</p>
       </div>
     </div>
   );

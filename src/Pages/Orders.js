@@ -16,13 +16,11 @@ function Orders() {
     }
   }); //if the user is not logged in, navigate the user to the log in page
   return (
-    <div className="Orders">
-      <div className="container">
-        <Sidebar />
-        <div className="greet">
-          <Navbar />
-          <div></div>
-        </div>
+    <div className="orders">
+      <Sidebar />
+      <div className="greet">
+        <Navbar />
+        <div></div>
       </div>
     </div>
   );

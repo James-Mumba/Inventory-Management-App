@@ -1,6 +1,5 @@
-import { faBell, faEnvelope } from "@fortawesome/free-regular-svg-icons";
+import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import { Button, Form } from "react-bootstrap";
 
@@ -10,7 +9,7 @@ function Navbar() {
       {/* <h1>NAVBAR</h1> */}
       <div className="search">
         <Form.Group className="mb-3" controlId="formGroupPassword">
-          <Form.Label>Search</Form.Label>
+          {/* <Form.Label>Search</Form.Label> */}
           <Form.Control
             className="here"
             type="Search"

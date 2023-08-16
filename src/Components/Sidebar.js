@@ -32,7 +32,7 @@ function Sidebar() {
     <div className="sidebar">
       <div className="logo">
         <div className="icon">
-          <Link className="name" to={"/"}>
+          <Link onClick={"/"} className="name" to={"/"}>
             <FontAwesomeIcon className="log" icon={faChartLine} />
             FA SALES LINE
           </Link>

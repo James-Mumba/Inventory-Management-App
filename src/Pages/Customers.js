@@ -17,12 +17,10 @@ function Customers() {
   }); //if the user is not logged in, navigate the user to the log in page
   return (
     <div className="Customers">
-      <div className="container">
-        <Sidebar />
-        <div className="greet">
-          <Navbar />
-          <div></div>
-        </div>
+      <Sidebar />
+      <div className="greet">
+        <Navbar />
+        <div></div>
       </div>
     </div>
   );

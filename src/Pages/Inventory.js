@@ -20,7 +20,14 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import swal from "sweetalert";
+
+// Toastify
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+//
+
+// import swal from "sweetalert";
+// import { text } from "@fortawesome/fontawesome-svg-core";
 // import { text } from "@fortawesome/fontawesome-svg-core";
 
 function Inventory() {
@@ -37,11 +44,11 @@ function Inventory() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  //
-  //
+
   //
   // FETCHING DATA FROM FIRESTORE
   //
+
   const [inventory, setInventory] = useState([]);
 
   useEffect(() => {
@@ -58,10 +65,12 @@ function Inventory() {
           const querySnapshot = await getDocs(q);
 
           querySnapshot.forEach((inventoryDoc) => {
-            inventoryItems.push({ id: doc.id, ...inventoryDoc.data() });
-            console.log(inventoryDoc.data());
+            inventoryItems.push({
+              id: inventoryDoc.id,
+              ...inventoryDoc.data(),
+            });
+            setInventory([...inventoryItems]);
           });
-          setInventory([...inventoryItems]);
         };
         fetchData();
       }
@@ -70,31 +79,19 @@ function Inventory() {
 
   //
   // STATRT OF DELETE
-  const deleteEntry = async (inventoryDocId) => {
-    const docId = inventoryDocId;
-    await deleteDoc(doc(db, "inventory-Data", docId))
-      .then(() => {
-        window.location.reload();
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage);
-      });
-    // swal({
-    //   title: `Delete Entry`,
-    //   text: `Are you sure you want to delete this Entry?`,
-    //   icon: "warning",
-    //   buttons: true,
-    //   dangerMode: true,})
-    // .then((willDelete) => {
-    //   if (willDelete) {
+  const deleteEntry = async (id) => {
+    toast("Deleting...");
+    try {
+      const docid = id;
 
-    //   } else {
-    //     swal("Cancelled!");
-    //   }
-    // });
+      await deleteDoc(doc(db, "inventory-Data", docid));
+      toast("Deleted!");
+      window.location.reload();
+    } catch (error) {
+      const errorMessage = error.message;
+      console.log(errorMessage);
+    }
   };
-  //
 
   // Sending data to firestore
   const nameRef = useRef();
@@ -131,6 +128,7 @@ function Inventory() {
       }
     });
   }
+  // fetching
 
   //
   // UPDATE INVENTORY
@@ -138,9 +136,33 @@ function Inventory() {
   const handleUpdateClose = () => updateShow(false);
   const handleUpdateShow = () => updateShow(true);
 
-  function updateInventory(inventoryDocId) {
+  // const updateEntry = async (id, newData) => {
+  //   try {
+  //     const docRef = doc(db, "inventory-Data", id);
+
+  //     await updateDoc(docRef, newData);
+  //     window.location.reload();
+  //   } catch (error) {
+  //     const errorMessage = error.message;
+  //     console.log(errorMessage);
+  //   }
+  // };
+
+  const updateInventory = async (id, newData) => {
+    toast("Updating...");
+    try {
+      const docid = id;
+
+      const docRef = doc(db, "inventory-Data", docid);
+
+      await updateDoc(docRef, newData);
+      toast("Successfully!!!");
+      window.location.reload();
+    } catch (error) {
+      const errorMessage = error.message;
+      console.log(errorMessage);
+    }
     handleUpdateShow();
-    const docId = inventoryDocId;
 
     window.updateInventory = function () {
       const Name = nameRef.current.value;
@@ -148,7 +170,7 @@ function Inventory() {
       const Quantity = quantityRef.current.value;
       const Total = Amount * Quantity;
 
-      const updateInventory = doc(db, "inventory-Data", docId);
+      const updateInventory = doc(db, "inventory-Data", id);
       updateDoc(updateInventory, {
         Name: Name,
         Amount: Amount,
@@ -163,7 +185,7 @@ function Inventory() {
           console.log(errorMessage);
         });
     };
-  }
+  };
   //END OF UPDATE INVENTORY
   //
 
@@ -176,6 +198,21 @@ function Inventory() {
           <Button variant="primary" onClick={handleShow}>
             Launch static backdrop modal
           </Button>
+
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          {/* Same as */}
+          <ToastContainer />
 
           <Modal
             show={show}
@@ -195,7 +232,7 @@ function Inventory() {
               <br />
               <input type="number" id="number" ref={amountRef} />
               <br />
-              <label htmlFor="quantity">Quantity</label>
+              <label htmlFor="quantity">No. of pcs</label>
               <br />
               <input type="number" id="qty" ref={quantityRef} />
               <br />
@@ -257,21 +294,24 @@ function Inventory() {
               </tr>
             </thead>
             <tbody>
-              {inventory.map((inventoryItems) => (
-                <tr key={Math.random()}>
-                  <td>{inventoryItems.Name}</td>
-                  <td>{inventoryItems.Amount}</td>
-                  <td>{inventoryItems.Quantity}</td>
-                  <td>{inventoryItems.Total}</td>
+              {inventory.map((inventoryDoc) => (
+                <tr key={inventoryDoc.id}>
+                  <td>{inventoryDoc.Name}</td>
+                  <td>{inventoryDoc.Amount}</td>
+                  <td>{inventoryDoc.Quantity}</td>
+                  <td>{inventoryDoc.Total}</td>
                   <td>
-                    <Button variant="danger" onClick={() => updateInventory()}>
+                    <Button
+                      variant="danger"
+                      onClick={() => updateInventory(inventoryDoc.id)}
+                    >
                       Update
                     </Button>
                   </td>
                   <td>
                     <Button
                       variant="danger"
-                      onClick={() => deleteEntry(inventoryItems.inventoryDocId)}
+                      onClick={() => deleteEntry(inventoryDoc.id)}
                     >
                       Delete
                     </Button>

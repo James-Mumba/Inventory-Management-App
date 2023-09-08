@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import { Button, Form } from "react-bootstrap";
-import { app } from "../Firebase";
+import { app, db } from "../Firebase";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 function Signup() {
   const nameRef = useRef();
@@ -15,11 +16,27 @@ function Signup() {
   function register() {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
+    const person = nameRef.current.value;
 
     createUserWithEmailAndPassword(auth, email, password).then(
       (usercredential) => {
         const userId = usercredential.user.uid;
         console.log(userId);
+        
+        const guests = doc(collection(db, "customers-Data"));
+
+        setDoc(guests, {
+          user: person,
+          email: email,
+          userId: userId,
+        })
+          .then(() => {
+            window.location.reload();
+          })
+          .catch((error) => {
+            const errorMessage = error.message;
+            console.log(errorMessage);
+          });
 
         navigate("/");
       }
